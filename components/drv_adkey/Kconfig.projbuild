@@ -1,0 +1,38 @@
+menu "Tostadora - Teclado analogico (AD Key)"
+
+    config ADKEY_RAW_IDLE
+        int "Lectura ADC sin pulsar nada (0-4095)"
+        range 0 4095
+        default 4095
+
+    config ADKEY_RAW_UP
+        int "Lectura ADC del boton ARRIBA"
+        range 0 4095
+        default 425
+
+    config ADKEY_RAW_DOWN
+        int "Lectura ADC del boton ABAJO"
+        range 0 4095
+        default 1130
+
+    config ADKEY_RAW_LEFT
+        int "Lectura ADC del boton IZQUIERDA"
+        range 0 4095
+        default 1830
+
+    config ADKEY_RAW_RIGHT
+        int "Lectura ADC del boton DERECHA"
+        range 0 4095
+        default 0
+
+    config ADKEY_RAW_OK
+        int "Lectura ADC del boton OK"
+        range 0 4095
+        default 2750
+
+    config ADKEY_TOLERANCE
+        int "Tolerancia (+/-) para reconocer un boton"
+        range 10 1000
+        default 150
+
+endmenu

@@ -1,0 +1,70 @@
+menu "Tostadora - Ventilador"
+
+    choice FAN_OUTPUT
+        prompt "Como se enciende el ventilador"
+        default FAN_OUT_RELAY_ACTIVE_LOW
+
+        config FAN_OUT_NONE
+            bool "Sin ventilador (no se usa ni se vigila)"
+
+        config FAN_OUT_RELAY_ACTIVE_LOW
+            bool "Canal 2 del modulo de rele, ACTIVO EN BAJO (el mismo modulo del calentador)"
+
+        config FAN_OUT_RELAY_ACTIVE_HIGH
+            bool "Canal de rele ACTIVO EN ALTO"
+
+        config FAN_OUT_MOSFET
+            bool "Modulo MOSFET (activo en alto, solo encendido y apagado)"
+    endchoice
+
+    config FAN_OPEN_DRAIN
+        bool "Pin en colector abierto (recomendado para rele activo en bajo)"
+        default y
+        depends on FAN_OUT_RELAY_ACTIVE_LOW
+
+    choice FAN_TACH_MODE
+        prompt "Cable amarillo del ventilador (tacometro)"
+        default FAN_TACH_PULSES
+        depends on !FAN_OUT_NONE
+
+        config FAN_TACH_PULSES
+            bool "Pulsos de tacometro: se comprueba que el ventilador gira (recomendado)"
+
+        config FAN_TACH_NONE
+            bool "No se usa: solo se confia en la orden de encender (MENOS SEGURO)"
+    endchoice
+
+    config FAN_TACH_PPR
+        int "Pulsos por vuelta del tacometro"
+        range 1 4
+        default 2
+        depends on FAN_TACH_PULSES
+
+    config FAN_MIN_RPM
+        int "Velocidad minima para considerar que gira (rpm)"
+        range 100 3000
+        default 600
+        depends on FAN_TACH_PULSES
+
+    config FAN_MAX_RPM
+        int "Velocidad maxima creible (rpm): por encima se considera RUIDO, no giro"
+        range 3000 20000
+        default 8000
+        depends on FAN_TACH_PULSES
+
+    config FAN_SPINUP_MS
+        int "Tiempo que se le da al ventilador para arrancar (ms)"
+        range 1000 10000
+        default 3000
+
+    config FAN_COOL_ON_C
+        int "El ventilador se enciende solo si el tambor pasa de (C)"
+        range 40 100
+        default 60
+
+    config FAN_COOL_OFF_C
+        int "... y se apaga cuando baja de (C)"
+        range 30 95
+        default 55
+
+endmenu

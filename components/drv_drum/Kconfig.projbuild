@@ -1,0 +1,45 @@
+menu "Tostadora - Tambor"
+
+    choice DRUM_OUTPUT
+        prompt "Motor del tambor"
+        default DRUM_OUT_L298N
+
+        config DRUM_OUT_NONE
+            bool "Sin motor (el tambor no se mueve ni se vigila)"
+
+        config DRUM_OUT_L298N
+            bool "Motor DC (TT) con L298N, un solo sentido (ENA = PWM, IN1 = sentido, IN2 a GND)"
+    endchoice
+
+    config DRUM_SPEED_PCT
+        int "Velocidad de trabajo del tambor (% de PWM)"
+        range 20 100
+        default 60
+        help
+            Es el ciclo de trabajo del PWM, no las rpm. Con el L298N se pierden ~2 V,
+            asi que a baja velocidad el motor puede no vencer la friccion.
+            Ajustalo con la tecla 'm' del monitor (prueba del tambor).
+
+    config DRUM_KICK_PCT
+        int "Potencia del pulso de arranque (%)"
+        range 50 100
+        default 100
+
+    config DRUM_KICK_MS
+        int "Duracion del pulso de arranque (ms)"
+        range 50 1500
+        default 300
+        help
+            Un motor TT necesita un empujon para vencer la friccion estatica con granos.
+
+    config DRUM_RAMP_MS
+        int "Tiempo de la rampa suave desde el pulso hasta la velocidad de trabajo (ms)"
+        range 50 5000
+        default 600
+
+    config DRUM_PWM_HZ
+        int "Frecuencia del PWM (Hz)"
+        range 500 20000
+        default 2000
+
+endmenu

@@ -1,0 +1,31 @@
+menu "Tostadora - Seguridad y control"
+
+    config SAFETY_MAX_TEMP_C
+        int "Temperatura maxima de seguridad (C)"
+        range 150 300
+        default 250
+        help
+            Si el tambor supera este valor, el calentador se apaga y el sistema
+            pasa a FALLA hasta que baje la temperatura y el usuario lo reinicie.
+
+    config SAFETY_COOL_DONE_C
+        int "Temperatura a la que se considera enfriado (C)"
+        range 30 100
+        default 60
+
+    config SAFETY_PROX_CUTS_HEATER
+        bool "La alerta de proximidad tambien apaga el calentador mientras dure"
+        default n
+        help
+            Por defecto la alerta de proximidad solo AVISA (pantalla y buzzer).
+
+    config BENCH_SIMULATE_SENSOR
+        bool "BANCO DE PRUEBAS: temperatura SIMULADA y calentador DESHABILITADO"
+        default n
+        help
+            Solo para probar la interfaz, la SD y el RTC cuando todavia no hay termocupla.
+            La temperatura se calcula con un modelo simple y el pin del calentador
+            NUNCA se pone en alto, aunque el SSR este conectado.
+            DESACTIVAR antes de usar la tostadora de verdad.
+
+endmenu

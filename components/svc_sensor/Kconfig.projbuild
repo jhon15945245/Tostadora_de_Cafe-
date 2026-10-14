@@ -1,0 +1,38 @@
+menu "Tostadora - Sensor de temperatura"
+
+    choice TEMP_SENSOR
+        prompt "Sensor de temperatura a usar"
+        default TEMP_SENSOR_MAX6675
+
+        config TEMP_SENSOR_MAX6675
+            bool "Termocupla tipo K con MAX6675 (hasta 1024 C) - para tostar"
+
+        config TEMP_SENSOR_DS18B20
+            bool "DS18B20 (SOLO hasta 125 C) - unicamente para pruebas, NO sirve para tostar"
+    endchoice
+
+endmenu
+
+menu "Tostadora - Sensor de proximidad (TCRT5000)"
+
+    config PROX_ACTIVE_LOW
+        bool "La lectura BAJA cuando hay algo cerca"
+        default y
+        help
+            En la mayoria de modulos TCRT5000, mas reflexion = menor voltaje en AO.
+            Si en tu modulo ocurre al reves, desactivalo.
+
+    config PROX_THRESHOLD
+        int "Umbral de alerta (lectura ADC 0-4095)"
+        range 0 4095
+        default 2000
+        help
+            Se calibra mirando el monitor serial con PROX_DEBUG_LOG activo:
+            anota la lectura sin nada cerca y con la mano a la distancia de alerta,
+            y pon el umbral en medio.
+
+    config PROX_DEBUG_LOG
+        bool "Imprimir lectura de proximidad y temperatura cada 2 s"
+        default y
+
+endmenu

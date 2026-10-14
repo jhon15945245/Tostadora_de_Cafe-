@@ -1,0 +1,44 @@
+menu "Tostadora - Salida del calentador"
+
+    choice HEATER_OUTPUT
+        prompt "Tipo de salida que maneja la resistencia"
+        default HEATER_OUT_SSR
+
+        config HEATER_OUT_SSR
+            bool "SSR (rele de estado solido, activo en ALTO, ciclo de 2 s)"
+
+        config HEATER_OUT_RELAY_ACTIVE_LOW
+            bool "Rele mecanico, modulo ACTIVO EN BAJO (el mas comun; ciclo largo)"
+
+        config HEATER_OUT_RELAY_ACTIVE_HIGH
+            bool "Rele mecanico, modulo ACTIVO EN ALTO (ciclo largo)"
+    endchoice
+
+    config HEATER_OPEN_DRAIN
+        bool "Pin en colector abierto (recomendado para modulos activos en bajo)"
+        default y
+        depends on HEATER_OUT_RELAY_ACTIVE_LOW
+        help
+            El modulo de rele se alimenta con 5 V y la ESP32 da 3,3 V: a veces ese nivel
+            "alto" no basta para apagar el rele. En colector abierto, el pin solo tira a
+            tierra (rele ON) o se suelta (rele OFF), y el propio modulo sube la linea.
+
+    config HEATER_RELAY_WINDOW_S
+        int "Duracion del ciclo del rele (segundos)"
+        range 6 30
+        default 10
+        depends on !HEATER_OUT_SSR
+        help
+            Cada ciclo el rele se enciende el porcentaje pedido de este tiempo.
+            Mas largo = menos desgaste de los contactos.
+
+    config HEATER_RELAY_MIN_S
+        int "Tiempo minimo encendido o apagado (segundos)"
+        range 1 5
+        default 1
+        depends on !HEATER_OUT_SSR
+        help
+            Evita maniobras muy cortas: por debajo de este tiempo el rele no se enciende,
+            y por encima de (ciclo - minimo) queda encendido todo el ciclo.
+
+endmenu
